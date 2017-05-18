@@ -1,3 +1,6 @@
+import BWT_forward
+
+
 def encode(string, a):
 
     alphabet = list(a)
@@ -12,11 +15,18 @@ def encode(string, a):
         else:
             occ[i] = 1
 
+
         ans.append(i)
         alphabet.pop(i)
         alphabet.insert(0, ltr)
 
     return ans, occ
 
+
+a1 = BWT_forward.bwt('mississipi')
+print a1
+a = ['$'] + BWT_forward.alphbt('mississipi')
+
+print encode(a1, a)
 
 
