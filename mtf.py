@@ -23,10 +23,4 @@ def encode(string, a):
     return ans, occ
 
 
-a1 = BWT_forward.bwt('mississipi')
-print a1
-a = ['$'] + BWT_forward.alphbt('mississipi')
-
-print encode(a1, a)
-
 
