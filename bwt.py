@@ -6,7 +6,8 @@ def suffix_sort(string):
 
     string = ''.join((string, '$'))
     n = len(string)
-    count = [0] * ord('z')  # array cor counting the number of appearances of each symbol in string
+    count = [0] * 128
+    # count = [0] * ord('z')  # array cor counting the number of appearances of each symbol in string
     positions = [0] * n  # holds the current positions of suffices in the suffix array
     classes = [0] * n  # holds the classes of equivalence each suffix belongs to
     alphabet = alphbt(string)  # holds alphabet, needed for array c = compact representation of F column

@@ -104,3 +104,7 @@ ENV/
 
 #var junk
 .DS_Store
+*.huf
+*.txt
+!requirements.txt
+*.bz2
