@@ -4,7 +4,8 @@
 import time
 import os
 import heapq
-import bwt
+import BWT_forward
+import BWT_reverse
 import mtf
 import mtf_decode
 
@@ -74,10 +75,10 @@ class Huffman(object):
         return None
 
     def prepare_string(self, text):
-        self.bwt_string = bwt.bwt(text)
-        alphabet = bwt.alphbt(self.bwt_string)
+        self.bwt_string = BWT_forward.bwt(text)
+        alphabet = BWT_forward.alphbt(self.bwt_string)
         self.mtf_string, self.freq = mtf.encode(self.bwt_string, alphabet)
-        self.alphabet = bwt.alphbt(self.bwt_string)
+        self.alphabet = BWT_forward.alphbt(self.bwt_string)
 
     def build_heap(self):
         for key, value in self.freq.iteritems():
@@ -254,7 +255,7 @@ def decode(path):
             current_code = ''
 
     decoded_string = mtf_decode.decode(decoded_string, alphabet)
-    
+    decoded_string = BWT_reverse.reverse_BWT(decoded_string)
     return decoded_string
 
 
