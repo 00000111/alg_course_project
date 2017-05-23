@@ -1,5 +1,6 @@
 import BWT_forward
 
+import bwt_forward_naive
 
 def reverse_BWT(string):
 
@@ -23,9 +24,9 @@ def reverse_BWT(string):
         m[a[i]] = count
         count += k[i]
 
-    q = [0] * len(string)
+    q = [0] * length
 
-    for j in xrange(len(string) - 1, -1, -1):
+    for j in xrange(length - 1, -1, -1):
         q[j] = string[start]
         start = c[start] + m[string[start]]
 
@@ -33,8 +34,16 @@ def reverse_BWT(string):
 
 
 if __name__ == '__main__':
-    print reverse_BWT('annb$aa')
-    print reverse_BWT('w$wwdd__nnoooaattTmmmrrrrrrooo__ooo')
+    s = 'abacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacabagabacabadabacabaeabacabadabacabafabacabadabacab' \
+        'aeabacabadabacabahabacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacabagabacabadabacabaeabacabadabacabaf' \
+        'abacabadabacabaeabacabadabacabaiabacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacabagabacabadabacaba' \
+        'eabacabadabacabafabacabadabacabaeabacabadabacabahabacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacab' \
+        'agabacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacabajabacabadabacabaeabacabadabacabafabacabadabacab' \
+        'aeabacabadabacabagabacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacabahabacabadabacabaeabacabadabacab' \
+        'afabacabadabacabaeabacabadabacabagabacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacabaia'
+
+
+    str1 = open('hobbit.txt', 'r').read()
 
 
 
