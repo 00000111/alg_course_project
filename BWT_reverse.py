@@ -1,11 +1,9 @@
 import BWT_forward
 
-import bwt_forward_naive
+def reverse_BWT(string, alphabet):
 
-def reverse_BWT(string):
-
-    a = BWT_forward.alphbt(string)
-    k = [0]* len(a)  # an array to store number of occurrences of each symbol
+    # alphabet = BWT_forward.alphbt(string)
+    k = [0]* len(alphabet)  # an array to store number of occurrences of each symbol
     m = {}  # a dict to store the starting pos of each symbol in the first column
     length = len(string)
     c = [0] * length  # an array to store ranks of each symbol
@@ -16,12 +14,12 @@ def reverse_BWT(string):
         if string[i] == '$':
             start = i
 
-        c[i] = k[a.index(string[i])]
-        k[a.index(string[i])] += 1
+        c[i] = k[alphabet.index(string[i])]
+        k[alphabet.index(string[i])] += 1
 
     count = 0
-    for i in xrange(len(a)):
-        m[a[i]] = count
+    for i in xrange(len(alphabet)):
+        m[alphabet[i]] = count
         count += k[i]
 
     q = [0] * length
@@ -30,7 +28,7 @@ def reverse_BWT(string):
         q[j] = string[start]
         start = c[start] + m[string[start]]
 
-    return ''.join(q)
+    return ''.join(q[:-1])
 
 
 if __name__ == '__main__':
