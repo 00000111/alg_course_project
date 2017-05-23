@@ -1,28 +1,18 @@
 #!/usr/bin/env python
+
+import os
 import argparse
-import BWT_forward
-import mtf
 import huffman
 
 parser = argparse.ArgumentParser()
-parser.add_argument('orig_string', metavar='S')
+parser.add_argument('path', metavar='FILE_PATH')
 
 if __name__ == '__main__':
     args = parser.parse_args()
 
-    bwt_string = BWT_forward.bwt(args.orig_string)
-    bwt_alphabet = BWT_forward.alphbt(bwt_string)
+    text_object = huffman.Huffman(args.path)
+    text_object.encode()
 
-    mtf_string, mtf_alphabet, occ = mtf.encode(bwt_string, bwt_alphabet)
+    out_path = os.path.splitext(args.path)[0] + '.huf'
 
-    bwt_alphabet = BWT_forward.alphbt(bwt_string)
-
-    huffman_tree = huffman.encode(mtf_string, occ)
-
-    huffman_table = huffman.build_table(huffman_tree, occ)
-
-    print(huffman_tree)
-
-    print(huffman_table)
-
-    print(mtf_string)
+    print('compressed info stored in {}'.format(out_path))

@@ -61,6 +61,7 @@ class Huffman(object):
         self.mtf_string = ''
         self.alphabet = []
         self.freq = {}
+        self._original_string = None
         self._compressed_string = None
         self._compressed_unpadded_string = None
 
@@ -153,6 +154,8 @@ class Huffman(object):
             text = input_file.read()
             text = text.rstrip()
 
+            self._original_string = text
+
             preparation_start = time.time()
             self.prepare_string(text)
             preparation_end = time.time()
@@ -212,6 +215,8 @@ def extract_encoded_data(path):
                 codes[code[0]] = int(code[1])
 
 
+        # extract alphabet
+
         int_alphabet = in_file.readline().split()
         alphabet = []
         for i in xrange(len(int_alphabet)):
@@ -228,6 +233,7 @@ def extract_encoded_data(path):
         while byte:
             byte = ord(byte)
             bits = bin(byte)[2:].rjust(8, '0')
+            # bits = bin(byte)[2:]
             # print(bits)
             coded_string += bits
             byte = in_file.read(1)
@@ -235,57 +241,39 @@ def extract_encoded_data(path):
     return codes, alphabet, coded_string
 
 
+def decode_string(coded_string, codes):
+    current_code = ''
+    decoded_string = []
+    for bit in coded_string:
+        current_code += bit
+        if current_code in codes.keys():
+            decoded_string.append(codes[current_code])
+            current_code = ''
+
+    return decoded_string
+
+
 def decode(path):
     filename, ext = os.path.splitext(path)
     codes, alphabet, coded_string = extract_encoded_data(path)
 
-    padding_info = coded_string[:8]
-    padding = int(padding_info, 2)
 
-    coded_string = coded_string[8:]
-    coded_string = coded_string[:-1*padding]
+    #remove padding
+    padding = int(coded_string[:8], 2)
+    coded_string = coded_string[8:-1*padding]
 
-    current_code = ''
-    decoded_string = []
+    # current_code = ''
 
-    for bit in coded_string:
-        current_code += bit
-        if current_code in codes:
-            decoded_string.append(codes[current_code])
-            current_code = ''
+    decoded_string = decode_string(coded_string, codes)
+    # decoded_string = []
+    #
+    # for bit in coded_string:
+    #     current_code += bit
+    #     if current_code in codes:
+    #         decoded_string.append(codes[current_code])
+    #         current_code = ''
 
     decoded_string = mtf_decode.decode(decoded_string, alphabet)
-    decoded_string = BWT_reverse.reverse_BWT(decoded_string)
+    decoded_string = BWT_reverse.reverse_BWT(decoded_string, alphabet)
     return decoded_string
 
-
-# Old useless stuff
-
-def encode(string, occ):
-    heap = [[count, [letter, '']] for letter, count in occ.iteritems()]
-    heapq.heapify(heap)
-    print(heap)
-    while len(heap) > 1:
-        lo = heapq.heappop(heap)
-        hi = heapq.heappop(heap)
-
-        for pair in lo[1:]:
-            pair[1] = '0' + pair[1]
-
-        for pair in hi[1:]:
-            pair[1] = '1' + pair[1]
-        heapq.heappush(heap, [lo[0] + hi[0]] + lo[1:] + hi[1:])
-    return sorted(heapq.heappop(heap)[1:], key=lambda p: (len(p[-1]), p))
-
-
-def build_table(tree, occ):
-    table = {}
-    for n in tree:
-        table[n[1]] = n[0]
-    return table
-
-
-def print_table(tree, occ):
-    print("Symbol".ljust(10) + "Weight".ljust(10) + "Huffman Code")
-    for p in tree:
-        print(str(p[0]).ljust(10) + str(occ[p[0]]).ljust(10) + p[1])
