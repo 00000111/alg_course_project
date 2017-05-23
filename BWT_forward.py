@@ -18,7 +18,7 @@ def suffix_sort(string):
         count[ord(string[i])] += 1
 
     # modify the array so that each index i contains the order of ith element in the array
-    for i in xrange(1, ord('z')):
+    for i in xrange(1, 128):
         count[i] += count[i - 1]
 
     # construct array c: for each letter ltr, add the the number of symbols smaller than ltr in the string
@@ -90,6 +90,7 @@ def suffix_sort(string):
     return positions, c
 
 
+
 def bwt(string):
 
     suff_arr = suffix_sort(string)[0]
@@ -105,15 +106,9 @@ def bwt(string):
 
 
 if __name__ == '__main__':
-    s = 'abacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacabagabacabadabacabaeabacabadabacabafabacabadabacab' \
-    'aeabacabadabacabahabacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacabagabacabadabacabaeabacabadabacabaf' \
-    'abacabadabacabaeabacabadabacabaiabacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacabagabacabadabacaba' \
-    'eabacabadabacabafabacabadabacabaeabacabadabacabahabacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacab' \
-    'agabacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacabajabacabadabacabaeabacabadabacabafabacabadabacab' \
-    'aeabacabadabacabagabacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacabahabacabadabacabaeabacabadabacab' \
-    'afabacabadabacabaeabacabadabacabagabacabadabacabaeabacabadabacabafabacabadabacabaeabacabadabacabaia'
 
-    DICT = ['$'] + alphbt(s)
-    
-    s1 = bwt(s)
-    print s1
+    st = 'anoozysmell,noryet'
+    print suffix_sort(st)
+
+
+
