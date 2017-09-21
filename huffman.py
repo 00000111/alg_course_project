@@ -4,10 +4,8 @@
 import time
 import os
 import heapq
-import BWT_forward
-import BWT_reverse
+import bwt
 import mtf
-import mtf_decode
 
 
 class HuffmanNode(object):
@@ -59,6 +57,7 @@ class Huffman(object):
         self.reverse_mapping = {}
         self.bwt_string = ''
         self.mtf_string = ''
+        # self.rle_string = []
         self.alphabet = []
         self.freq = {}
         self._original_string = None
@@ -76,15 +75,14 @@ class Huffman(object):
         return None
 
     def prepare_string(self, text):
-        self.bwt_string = BWT_forward.bwt(text)
-        alphabet = BWT_forward.alphbt(self.bwt_string)
+        self.bwt_string = bwt.encode(text)
+        alphabet = bwt.alphabet(self.bwt_string)
         self.mtf_string, self.freq = mtf.encode(self.bwt_string, alphabet)
-        self.alphabet = BWT_forward.alphbt(self.bwt_string)
+        self.alphabet = bwt.alphabet(self.bwt_string)
 
     def build_heap(self):
-        for key, value in self.freq.iteritems():
-            node = HuffmanNode(key, value)
-            heapq.heappush(self.heap, node)
+        for char, frequency in self.freq.iteritems():
+            heapq.heappush(self.heap, HuffmanNode(char, frequency))
 
         while len(self.heap) > 1:
             node1 = heapq.heappop(self.heap)
@@ -107,10 +105,10 @@ class Huffman(object):
         self._generate_codes(node.right, code + '1')
 
     def generate_codes(self):
-        node = heapq.heappop(self.heap)
+        root = heapq.heappop(self.heap)
         code = ''
-        self._generate_codes(node, code)
-        heapq.heappush(self.heap, node)
+        self._generate_codes(root, code)
+        heapq.heappush(self.heap, root)
 
     def encode_text(self):
         encoded_text = ''
@@ -119,10 +117,7 @@ class Huffman(object):
 
         self._compressed_unpadded_string = encoded_text
 
-
         padding = 8 - len(encoded_text) % 8
-
-        # print(padding)
 
         encoded_text += '0' * padding
 
@@ -183,11 +178,7 @@ class Huffman(object):
             payload_generation_end = time.time()
             self._compressed_string = arr
 
-
-
-            # print(reverse_mapping_string)
             file_write_start = time.time()
-            # output.write(''.join(self.alphabet))
             output.write(reverse_mapping_string + '\n')
             output.write(alphabet_string + '\n')
             output.write(bytes(arr))
@@ -223,9 +214,6 @@ def extract_encoded_data(path):
             if int_alphabet != '\n':
                 alphabet.append(chr(int(int_alphabet[i])))
 
-        # print(int_alphabet)
-        # print(alphabet)
-
         # read coded string
 
         coded_string = ''
@@ -233,11 +221,9 @@ def extract_encoded_data(path):
         while byte:
             byte = ord(byte)
             bits = bin(byte)[2:].rjust(8, '0')
-            # bits = bin(byte)[2:]
-            # print(bits)
             coded_string += bits
             byte = in_file.read(1)
-    # print(coded_string)
+
     return codes, alphabet, coded_string
 
 
@@ -262,18 +248,10 @@ def decode(path):
     padding = int(coded_string[:8], 2)
     coded_string = coded_string[8:-1*padding]
 
-    # current_code = ''
-
+    #decode
     decoded_string = decode_string(coded_string, codes)
-    # decoded_string = []
-    #
-    # for bit in coded_string:
-    #     current_code += bit
-    #     if current_code in codes:
-    #         decoded_string.append(codes[current_code])
-    #         current_code = ''
-
-    decoded_string = mtf_decode.decode(decoded_string, alphabet)
-    decoded_string = BWT_reverse.reverse_BWT(decoded_string, alphabet)
+    # decoded_string = rle.decode(decoded_string)
+    decoded_string = mtf.decode(decoded_string, alphabet)
+    decoded_string = bwt.decode(decoded_string, alphabet)
     return decoded_string
 

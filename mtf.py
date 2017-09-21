@@ -1,6 +1,3 @@
-import BWT_forward
-
-
 def encode(string, a):
 
     alphabet = list(a)
@@ -23,4 +20,16 @@ def encode(string, a):
     return ans, occ
 
 
+def decode(string, a):
 
+    alphabet = list(a)
+    ans = []
+
+    for i in xrange(len(string)):
+
+        ch = string[i]
+        ans.append(alphabet[ch])
+        alphabet.pop(ch)
+        alphabet.insert(0, ans[i])
+
+    return ''.join(ans)
